@@ -1,48 +1,64 @@
-#include"sort.h"
+#include "sort.h"
 
 
+void merge(int *array, int *left, size_t
+size_left, int *right, size_t size_right)
+{
+	size_t i = 0, j = 0, k = 0;
+
+	printf("Merging...\n");
+	printf("[left]: ");
+	print_array(left, size_left);
+	printf("[right]: ");
+	print_array(right, size_right);
+
+	while (i < size_left && j < size_right)
+	{
+		if (left[i] < right[j])
+			array[k++] = left[i++];
+		else
+			array[k++] = right[j++];
+	}
+
+	while (i < size_left)
+		array[k++] = left[i++];
+
+	while (j < size_right)
+		array[k++] = right[j++];
+
+	printf("[Done]: ");
+	print_array(array, size_left + size_right);
+}
 /**
- * merge_sort - function that sorts an array of integers in ascending
- * order using the Merge sort algorithm
+ * merge_sort - function that sorts an array of integers
+ * in ascending order using the Merge sort algorithm
  * @array: array
  * @size: size of the array
- */
+ * Return: void
+*/
 void merge_sort(int *array, size_t size)
 {
-	int *left, *right, *result, i, j, k;
+	size_t mid, i;
+	int *left, *right;
 
 	if (size < 2)
 		return;
-	left = malloc(sizeof(int) * (size / 2));
-	right = malloc(sizeof(int) * (size - size / 2));
-	result = malloc(sizeof(int) * size);
-	for (i = 0; i < size / 2; i++)
+
+	mid = size / 2;
+
+	left = malloc(sizeof(int) * mid);
+	right = malloc(sizeof(int) * (size - mid));
+
+	for (i = 0; i < mid; i++)
 		left[i] = array[i];
-	for (j = 0; j < size - size / 2; j++)
-		right[j] = array[size / 2 + j];
-	merge_sort(left, size / 2);
-	merge_sort(right, size - size / 2);
-	i = j = 0;
-	k = 0;
-	while (i < size / 2 && j < size - size / 2)
-	{
-		if (left[i] <= right[j])
-		{
-			result[k++] = left[i++];
-		}
-		else
-		{
-			result[k++] = right[j++];
-		}
-	}
-	while (i < size / 2)
-		result[k++] = left[i++];
-	while (j < size - size / 2)
-		result[k++] = right[j++];
-	for (i = 0; i < size; i++)
-		array[i] = result[i];
+
+	for (i = mid; i < size; i++)
+		right[i - mid] = array[i];
+
+	merge_sort(left, mid);
+	merge_sort(right, size - mid);
+	merge(array, left, mid, right, size - mid);
+
 	free(left);
 	free(right);
-	free(result);
 }
-
